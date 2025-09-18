@@ -16,4 +16,13 @@ public class ConsoleView {
         return readInt();
     }
 
+
+    public int readInt() {
+        return readInt("");
+    }
+
+    public void showMessage(String s) {
+        System.out.println(s);
+    }
+
 }
