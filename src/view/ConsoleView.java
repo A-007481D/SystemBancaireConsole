@@ -16,6 +16,16 @@ public class ConsoleView {
         return readInt();
     }
 
+    public int showAccountMenu() {
+        System.out.println("--- MENU PERSONEL ---");
+        System.out.println("1. Versement");
+        System.out.println("2. retraite");
+        System.out.println("3. transfert");
+        System.out.println("4. consulter solde");
+        System.out.println("5. lister les operations");
+        return readInt();
+    }
+
 
     public int readInt() {
         return readInt("");
