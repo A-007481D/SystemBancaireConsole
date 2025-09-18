@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class ConsoleView {
 
-    Scanner sc = new Scanner(System.in);
+    private Scanner sc = new Scanner(System.in);
 
     private int ShowMenu() {
         System.out.println("--- MENU PRINCIPAL ---");
@@ -44,7 +44,17 @@ public class ConsoleView {
         }
     }
 
-
+    public int readInt(String prompt) {
+        while (true) {
+            try {
+                System.out.println(prompt);
+                String s = sc.nextLine().trim();
+                return Integer.parseInt(s);
+            } catch (Exception e) {
+                System.out.println("integer invalid");
+            }
+        }
+    }
     public int readInt() {
         return readInt("");
     }
