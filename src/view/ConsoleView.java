@@ -3,32 +3,32 @@ package view;
 import java.util.Scanner;
 
 public class ConsoleView {
-
     private Scanner sc = new Scanner(System.in);
 
-    private int ShowMenu() {
-        System.out.println("--- MENU PRINCIPAL ---");
-        System.out.println("1. Creer un compte");
-        System.out.println("2. Gere compte(entrer code)");
-        System.out.println("3. lister toutes les comptes");
-        System.out.println("4. exit");
-        System.out.println("choix : ");
+    public int showMainMenu() {
+        System.out.println("\n=== MAIN MENU ===");
+        System.out.println("1. Create account");
+        System.out.println("2. Select account (enter code to manage)");
+        System.out.println("3. List all accounts");
+        System.out.println("0. Exit");
+        System.out.print("Choice: ");
         return readInt();
     }
 
     public int showAccountMenu(String code) {
-        System.out.println("--- MENU PERSONEL (" + code + ") ---");
-        System.out.println("1. Versement");
-        System.out.println("2. retraite");
-        System.out.println("3. transfert");
-        System.out.println("4. consulter solde");
-        System.out.println("5. lister les operations");
-        System.out.println("choix : ");
+        System.out.println("\n--- Account Menu (" + code + ") ---");
+        System.out.println("1. Deposit");
+        System.out.println("2. Withdraw");
+        System.out.println("3. Transfer");
+        System.out.println("4. Check balance");
+        System.out.println("5. List history");
+        System.out.println("0. Back to main");
+        System.out.print("Choice: ");
         return readInt();
     }
 
-    public String readLIne(String prompt) {
-        System.out.println(prompt);
+    public String readLine(String prompt) {
+        System.out.print(prompt);
         return sc.nextLine().trim();
     }
 
@@ -47,20 +47,16 @@ public class ConsoleView {
     public int readInt(String prompt) {
         while (true) {
             try {
-                System.out.println(prompt);
+                System.out.print(prompt);
                 String s = sc.nextLine().trim();
                 return Integer.parseInt(s);
             } catch (Exception e) {
-                System.out.println("integer invalid");
+                System.out.println("Invalid integer, try again.");
             }
         }
     }
-    public int readInt() {
-        return readInt("");
-    }
 
-    public void showMessage(String s) {
-        System.out.println(s);
-    }
+    private int readInt() { return readInt(""); }
 
+    public void showMessage(String s) { System.out.println(s); }
 }

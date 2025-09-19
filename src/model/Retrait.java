@@ -5,7 +5,7 @@ public class Retrait extends Operation {
 
     public Retrait(double montant, String destination) {
         super(montant);
-        this.destination = destination == ? "Dest inconnu" : destination;
+        this.destination = destination == null ? "Inconnu" : destination;
     }
 
     @Override
@@ -14,5 +14,4 @@ public class Retrait extends Operation {
     }
 
     public String getDestination() { return destination; }
-
 }

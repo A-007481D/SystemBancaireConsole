@@ -10,8 +10,9 @@ public class CompteCourant extends Compte {
 
     @Override
     public void retirer(double montant) {
-        if(solde - montant < -decouvert) {
-            throw new IllegalArgumentException("7dek tma, rak fetty limite!");
+        if (montant <= 0) throw new IllegalArgumentException("Amount must be positive");
+        if (solde - montant < -decouvert) {
+            throw new IllegalArgumentException("Withdrawal denied: exceeds overdraft limit");
         }
         solde -= montant;
     }
@@ -20,17 +21,13 @@ public class CompteCourant extends Compte {
     public double calculerInteret() {
         return 0.0;
     }
-    @Override
-    public void afficherDetailes() {
-        System.out.println("Compte courant:" + code + " | Solde : " + solde + " | Decouvert : " + decouvert);
-    }
 
+    @Override
+    public void afficherDetails() {
+        System.out.println("Compte Courant " + code + " | Solde: " + solde + " | Découvert: " + decouvert);
+    }
 
     public double getDecouvert() {
         return decouvert;
     }
-
-
-
-
 }

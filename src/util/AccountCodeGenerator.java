@@ -5,6 +5,6 @@ public class AccountCodeGenerator {
 
     public static synchronized String nextCode() {
         String digits = String.format("%05d", counter++);
-        return "CPT" + digits;
+        return "CPT-" + digits;
     }
 }

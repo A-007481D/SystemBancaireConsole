@@ -1,11 +1,11 @@
 package controller;
 
 import model.Compte;
-import service.BanqueService;
 import repository.CompteRepository;
 import repository.OperationRepository;
-import view.ConsoleView;
+import service.BanqueService;
 import util.AccountCodeGenerator;
+import view.ConsoleView;
 import java.util.regex.Pattern;
 
 public class BanqueController {
@@ -14,62 +14,69 @@ public class BanqueController {
     private BanqueService banqueService;
     private ConsoleView view;
 
-
-
-    public BanqueController(CompteRepository compteRepo, OperationRepository operationRep, ConsoleView consoleView) {
+    public BanqueController(CompteRepository compteRepo, OperationRepository operationRepo, ConsoleView view) {
         this.compteRepo = compteRepo;
-        this.operationRepo = operationRep;
-        this.banqueService = new BanqueService(compteRepo, OperationRepo);
+        this.operationRepo = operationRepo;
+        this.banqueService = new BanqueService(compteRepo, operationRepo);
         this.view = view;
-
     }
 
     public void start() {
-        while(true) {
+        while (true) {
             int choice = view.showMainMenu();
-            switch(choice) {
-                case 1: createAccountFlow(); break;
-                case 2: selectAccountFlow(); break;
-                case 3: listAllAccounts(); break;
-                case 0: view.showMessage("Thella!"); break;
-                default: view.showMessage("3awd khtar!");
+            switch (choice) {
+                case 1:
+                    createAccountFlow();
+                    break;
+                case 2:
+                    selectAccountFlow();
+                    break;
+                case 3:
+                    listAllAccounts();
+                    break;
+                case 0:
+                    view.showMessage("Thella!");
+                    return;
+                default:
+                    view.showMessage("choix invalid");
             }
         }
     }
 
-    public void createAccountFlow() {
-        view.showMessage("\ncreer compte");
+    private void createAccountFlow() {
+        view.showMessage("\nCreer compte:");
         String code = AccountCodeGenerator.nextCode();
-        view.ShowMessage("code generé : " + code);
+        view.showMessage("code generé: " + code);
         int type = view.readInt("Type (1 = courant, 2 = epargne): ");
         double initial = view.readDouble("balance initial (>=0): ");
         if (initial < 0) { view.showMessage("balance khasso ykon >= 0"); return; }
 
         try {
             if (type == 1) {
-                double dec = view.readDouble("ch7al max dyal -solde: ");
+                double dec = view.readDouble("Overdraft limit (positive): ");
                 banqueService.createCompteCourant(code, initial, dec);
             } else if (type == 2) {
-                double taux = view.readDouble("dkhel percentage d riba: ");
+                double taux = view.readDouble("Interest rate (e.g. 0.03): ");
                 banqueService.createCompteEpargne(code, initial, taux);
             } else {
-                view.showMessage("ma3ndnach had type dl comptes");
+                view.showMessage("Invalid type");
                 return;
             }
-            view.showMessage("merhba bik m3ana: " + code);
+            view.showMessage("Account created: " + code);
         } catch (Exception e) {
-            view.showMessage("walo compte mabghach yt9ad lik: " + e.getMessage());
+            view.showMessage("Error creating account: " + e.getMessage());
         }
     }
+
     private void selectAccountFlow() {
-        String code = view.readLine("dkhel nmra dlcompte : ").toUpperCase();
+        String code = view.readLine("Enter account code (format CPT-00001): ").toUpperCase();
         if (!Pattern.matches("CPT-\\d{5}", code)) {
-            view.showMessage("machy hakak, nmra khas tkon CPT-00001 matalan");
+            view.showMessage("Invalid code format");
             return;
         }
         Compte compte = compteRepo.findByCode(code).orElse(null);
         if (compte == null) {
-            view.showMessage("ma3ndnach chi hsab bhad nmra : " + code);
+            view.showMessage("Account not found: " + code);
             return;
         }
 
@@ -78,30 +85,30 @@ public class BanqueController {
             try {
                 switch (choice) {
                     case 1:
-                        double m = view.readDouble("chhal bghiti t7ett 3ndna : ");
-                        if (m <= 0) { view.showMessage("wach nta hmar"); break; }
-                        String src = view.readLine("source: ");
+                        double m = view.readDouble("Amount to deposit: ");
+                        if (m <= 0) { view.showMessage("Amount must be positive"); break; }
+                        String src = view.readLine("Source: ");
                         banqueService.effectuerVersement(compte, m, src);
-                        view.showMessage("safi versiti " + m);
+                        view.showMessage("Deposited " + m);
                         break;
                     case 2:
-                        double mr = view.readDouble("chhal tbghi tirer: ");
+                        double mr = view.readDouble("Amount to withdraw: ");
                         if (mr <= 0) { view.showMessage("Amount must be positive"); break; }
-                        String dest = view.readLine("fin bghiti tirehom: ");
+                        String dest = view.readLine("Destination: ");
                         banqueService.effectuerRetrait(compte, mr, dest);
-                        view.showMessage("sf tiriti " + mr);
+                        view.showMessage("Withdrew " + mr);
                         break;
                     case 3:
-                        String destCode = view.readLine("dkhel lmem ghatsifthom: ").toUpperCase();
-                        if (!Pattern.matches("CPT-\\d{5}", destCode)) { view.showMessage("nmra dlcomte machy hiya hadik"); break; }
+                        String destCode = view.readLine("Destination account code: ").toUpperCase();
+                        if (!Pattern.matches("CPT-\\d{5}", destCode)) { view.showMessage("Invalid code format"); break; }
                         Compte destCompte = compteRepo.findByCode(destCode).orElse(null);
-                        if (destCompte == null) { view.showMessage("ma3ndnach had lhsab"); break; }
-                        double mt = view.readDouble("chhal atsift: ");
+                        if (destCompte == null) { view.showMessage("Destination not found"); break; }
+                        double mt = view.readDouble("Amount to transfer: ");
                         banqueService.effectuerVirement(compte, destCompte, mt);
-                        view.showMessage("sifetty " + mt + " l " + destCode);
+                        view.showMessage("Transferred " + mt + " to " + destCode);
                         break;
                     case 4:
-                        view.showMessage("solde dyalk: " + banqueService.consulterSolde(compte));
+                        view.showMessage("Balance: " + banqueService.consulterSolde(compte));
                         break;
                     case 5:
                         banqueService.listerOperations(compte);
@@ -109,7 +116,7 @@ public class BanqueController {
                     case 0:
                         return;
                     default:
-                        view.showMessage("3awd khtar");
+                        view.showMessage("Invalid choice");
                 }
             } catch (Exception e) {
                 view.showMessage("Error: " + e.getMessage());
@@ -118,7 +125,7 @@ public class BanqueController {
     }
 
     private void listAllAccounts() {
-        view.showMessage("\nga3 lhsabat:");
+        view.showMessage("\nAll accounts:");
         compteRepo.findAll().forEach(c -> c.afficherDetails());
     }
 }
