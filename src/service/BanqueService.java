@@ -27,7 +27,11 @@ public class BanqueService {
 
     public void effectuerVersement(Compte compte, double montant, String source) {
         Versement v = new Versement(montant, source);
-        compte.setSolde(compte.getSolde() + montant);
+        if (compte instanceof CompteEpargne) {
+            ((CompteEpargne) compte).deposer(montant);
+        } else {
+            compte.setSolde(compte.getSolde() + montant);
+        }
         compte.ajouterOperation(v);
         operationRepo.save(v);
     }
@@ -45,8 +49,12 @@ public class BanqueService {
         src.ajouterOperation(r);
         operationRepo.save(r);
 
+        if (dest instanceof CompteEpargne) {
+            ((CompteEpargne) dest).deposer(montant);
+        } else {
+            dest.setSolde(dest.getSolde() + montant);
+        }
         Versement v = new Versement(montant, "Virement de " + src.getCode());
-        dest.setSolde(dest.getSolde() + montant);
         dest.ajouterOperation(v);
         operationRepo.save(v);
     }
