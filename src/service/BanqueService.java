@@ -34,4 +34,37 @@ public class BanqueService {
         operationRepo.save(v);
     }
 
+    public void effectuerRetraite(Compte, double montant, String destination){
+        compte.retirer(montant)
+        Retrait r = new Retrait(montant, destination);
+        compte.ajouterOperation(r);
+        operationRepo.save(r);
+    }
+
+    public void effectuerVirement(Compte src, Compte dest, double montant){
+        src.retirer(montant);
+        Retrait r = new Retrait(montant, "Virement vers " + dest.getCode());
+        src.ajouterOperation(r);
+        operationRepo.save(r);
+
+        Versement v = new Versement(montant, "Virement de " + src.getCode());
+        dest.setSolde(dest.getSolde() + montant);
+        dest.ajouterOperation(v);
+        operationRepo.save(v);
+    }
+
+    public double consulterSolde(Compte compte) {
+        return compte.getSolde();
+    }
+
+    public void listerOperations(Compte compte) {
+        if (compte.getListOperation().isEmpty()) {
+            System.out.println("pas d'operations trouve pour " + compte.getCode());
+        } else {
+            compte.getListOperations().forEach(Operation::afficherDetails);
+        }
+    }
+
+
+
 }
