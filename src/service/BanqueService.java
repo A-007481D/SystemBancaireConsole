@@ -14,8 +14,24 @@ public class BanqueService {
 
     }
 
-    public Compte c createAccountFlow() {
+    public Compte createCompteCourant(String code, double initial, double decouvert) {
+        Compte c = new CompteCourant(code, initial, decouvert);
+        compteRepo.save(c);
+        return c;
 
+    }
+
+    public Compte createCompteEpargne(String code, double initial, double taux) {
+        Comtpe c = new CompteEpargne(code, initial,taux);
+        compteRepo.save(c);
+        return c;
+    }
+
+    public void effectuerVersement(Compte, double montant, String source){
+        Versement v = new Versement(montant, source);
+        compte.setSolde(compte.getSolde() + montant);
+        compte.ajouterOperation(v);
+        operationRepo.save(v);
     }
 
 }
