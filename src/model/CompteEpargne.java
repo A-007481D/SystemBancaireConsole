@@ -2,10 +2,12 @@ package model;
 
 public class CompteEpargne extends Compte {
     private double tauxInteret = 0.03;
+    private long dernierDepot;
 
     public CompteEpargne(String code, double solde, double tauxInteret) {
         super(code, solde);
         this.tauxInteret = tauxInteret;
+        this.dernierDepot = System.currentTimeMillis();
     }
 
     @Override
@@ -19,7 +21,20 @@ public class CompteEpargne extends Compte {
 
     @Override
     public double calculerInteret() {
-        return solde * tauxInteret;
+        long new = System.currentTimeMillis();
+        long diff = now - dernierDepot;
+        if(diff >= 5000) {
+            double interet = solde * tauxInteret;
+            solde += interet;
+            dernierDepot = now;
+            return interet;
+        }
+        return 0;
+    }
+
+    public void deposer(double montant) {
+        solde += montant;
+        dernierDepot = System.currentTimeMillis();
     }
 
     @Override
