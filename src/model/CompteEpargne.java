@@ -21,7 +21,7 @@ public class CompteEpargne extends Compte {
 
     @Override
     public double calculerInteret() {
-        long new = System.currentTimeMillis();
+        long now = System.currentTimeMillis();
         long diff = now - dernierDepot;
         if(diff >= 5000) {
             double interet = solde * tauxInteret;

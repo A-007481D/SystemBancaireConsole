@@ -59,7 +59,12 @@ public class BanqueService {
         operationRepo.save(v);
     }
 
-    public double consulterSolde(Compte compte) { return compte.getSolde(); }
+    public double consulterSolde(Compte compte) {
+        if(compte instanceof CompteEpargne) {
+            ((CompteEpargne) compte).calculerInteret();
+        }
+        return compte.getSolde();
+    }
 
     public void listerOperations(Compte compte) {
         if (compte.getListeOperations().isEmpty()) {

@@ -108,7 +108,8 @@ public class BanqueController {
                         view.showMessage("Transferred " + mt + " to " + destCode);
                         break;
                     case 4:
-                        view.showMessage("Balance: " + banqueService.consulterSolde(compte));
+                        double solde = banqueService.consulterSolde(compte);
+                        view.showMessage("Balance: " + String.format("%.2f", solde));
                         break;
                     case 5:
                         banqueService.listerOperations(compte);
